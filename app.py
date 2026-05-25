@@ -91,14 +91,20 @@ html, body,
 
 /* ── Botões sidebar ── */
 [data-testid="stSidebar"] .stButton > button {
-    background-color: rgba(247,241,232,0.14) !important;
-    color: var(--color-cream) !important;
-    border: 1px solid rgba(247,241,232,0.30) !important;
+    background-color: #5C2018 !important;
+    color: #F7F1E8 !important;
+    border: 1px solid rgba(247,241,232,0.25) !important;
     font-weight: 500 !important;
 }
+[data-testid="stSidebar"] .stButton > button *,
+[data-testid="stSidebar"] .stButton > button p,
+[data-testid="stSidebar"] .stButton > button span {
+    color: #F7F1E8 !important;
+    background: transparent !important;
+}
 [data-testid="stSidebar"] .stButton > button:hover {
-    background-color: rgba(247,241,232,0.25) !important;
-    border-color: rgba(247,241,232,0.55) !important;
+    background-color: #7A2E2A !important;
+    border-color: rgba(247,241,232,0.50) !important;
 }
 [data-testid="stSidebar"] [data-testid="stDownloadButton"] button {
     background-color: var(--color-accent) !important;
@@ -108,6 +114,21 @@ html, body,
 }
 [data-testid="stSidebar"] [data-testid="stDownloadButton"] button:hover {
     background-color: #8F3B36 !important;
+}
+
+/* ── File uploader da sidebar ── */
+[data-testid="stSidebar"] [data-testid="stFileUploaderDropzone"] {
+    background-color: rgba(247,241,232,0.08) !important;
+    border: 1px dashed rgba(247,241,232,0.30) !important;
+    border-radius: 6px !important;
+}
+[data-testid="stSidebar"] [data-testid="stFileUploaderDropzone"] * {
+    color: var(--color-cream) !important;
+}
+[data-testid="stSidebar"] [data-testid="stFileUploaderDropzone"] button {
+    background-color: transparent !important;
+    border: 1px solid rgba(247,241,232,0.45) !important;
+    color: var(--color-cream) !important;
 }
 
 /* ── Branding header ── */
@@ -217,9 +238,36 @@ button[kind="primary"] {
     color: var(--color-ink) !important;
 }
 
-/* ── Container chat ── */
-[data-testid="stVerticalBlockBorderWrapper"] {
+/* ── Container chat (apenas área principal) ── */
+[data-testid="stMainBlockContainer"] [data-testid="stVerticalBlockBorderWrapper"] {
     background-color: var(--color-bg) !important;
+}
+
+/* ── Sidebar: reset de containers internos ── */
+[data-testid="stSidebar"] [data-testid="stVerticalBlockBorderWrapper"],
+[data-testid="stSidebar"] [data-testid="column"],
+[data-testid="stSidebar"] .stColumn,
+[data-testid="stSidebar"] [data-testid="stHorizontalBlock"],
+[data-testid="stSidebar"] div[class*="block-container"],
+[data-testid="stSidebar"] [data-testid="element-container"],
+[data-testid="stSidebar"] div[class*="stColumn"] {
+    background-color: transparent !important;
+}
+
+/* ── Labels sidebar (override da regra global ink) ── */
+[data-testid="stSidebar"] label,
+[data-testid="stSidebar"] [data-testid="stWidgetLabel"] *,
+[data-testid="stSidebar"] [data-testid="stWidgetLabel"] p {
+    color: rgba(247,241,232,0.75) !important;
+    opacity: 1 !important;
+}
+
+/* ── Caption/rodapé da sidebar ── */
+[data-testid="stSidebar"] [data-testid="stCaptionContainer"] *,
+[data-testid="stSidebar"] small,
+[data-testid="stSidebar"] .stCaption * {
+    color: rgba(247,241,232,0.55) !important;
+    opacity: 1 !important;
 }
 
 /* ── Títulos ── */
@@ -243,6 +291,20 @@ hr { border-color: var(--color-border); }
 }
 
 footer { visibility: hidden; }
+
+/* ── Sidebar colapsado: esconder barra bordo ── */
+[data-testid="collapsedControl"],
+[data-testid="stSidebarCollapsedControl"],
+section[data-testid="stSidebar"][aria-expanded="false"] + div {
+    background-color: transparent !important;
+    border: none !important;
+    box-shadow: none !important;
+}
+[data-testid="collapsedControl"] button,
+[data-testid="stSidebarCollapsedControl"] button {
+    color: var(--color-bordo) !important;
+    background-color: transparent !important;
+}
 </style>
 """, unsafe_allow_html=True)
 
@@ -409,22 +471,19 @@ def render_sidebar():
 
         st.divider()
 
-        # ── Nova planilha / limpar conversa ───────────────────────────────
-        col_a, col_b = st.columns(2)
-        with col_a:
-            if st.button("Nova planilha", use_container_width=True, help="Começa do zero"):
-                st.session_state.workbook_bytes = create_template(
-                    project_name=st.session_state.project_name
-                ).read()
-                st.session_state.display_messages = []
-                st.session_state.api_messages = []
-                st.session_state.last_saved = None
-                st.rerun()
-        with col_b:
-            if st.button("Limpar chat", use_container_width=True, help="Mantém planilha"):
-                st.session_state.display_messages = []
-                st.session_state.api_messages = []
-                st.rerun()
+        # ── Nova planilha / limpar conversa ───────────────────────────────────
+        if st.button("Nova planilha", use_container_width=True, help="Começa do zero"):
+            st.session_state.workbook_bytes = create_template(
+                project_name=st.session_state.project_name
+            ).read()
+            st.session_state.display_messages = []
+            st.session_state.api_messages = []
+            st.session_state.last_saved = None
+            st.rerun()
+        if st.button("Limpar chat", use_container_width=True, help="Mantém planilha"):
+            st.session_state.display_messages = []
+            st.session_state.api_messages = []
+            st.rerun()
 
         st.divider()
 
