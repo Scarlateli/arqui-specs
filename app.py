@@ -190,16 +190,22 @@ def render_sidebar():
             key="uploader",
         )
         if uploaded:
-            try:
-                # Valida que é um xlsx válido
-                wb_test = load_workbook_from_bytes(uploaded.getvalue())
-                st.session_state.workbook_bytes = uploaded.getvalue()
-                info = get_project_info(wb_test)
-                st.session_state.project_name = info["nome"]
-                st.success("Planilha carregada!")
-                st.rerun()
-            except Exception as e:
-                st.error(f"Arquivo inválido: {e}")
+            # Só processa se for um arquivo NOVO (file_id diferente do último).
+            # Sem isso, cada st.rerun() re-lê o uploader e sobrescreve
+            # as modificações feitas pelo chat.
+            if uploaded.file_id != st.session_state.get("last_uploaded_id"):
+                try:
+                    wb_test = load_workbook_from_bytes(uploaded.getvalue())
+                    st.session_state.workbook_bytes = uploaded.getvalue()
+                    st.session_state.last_uploaded_id = uploaded.file_id
+                    info = get_project_info(wb_test)
+                    st.session_state.project_name = info["nome"]
+                    st.session_state.display_messages = []
+                    st.session_state.api_messages = []
+                    st.success("Planilha carregada!")
+                    st.rerun()
+                except Exception as e:
+                    st.error(f"Arquivo inválido: {e}")
 
         # ── Download ──────────────────────────────────────────────────────
         wb = get_workbook()
@@ -385,23 +391,27 @@ def main():
     with col_chat:
         st.markdown("### 💬 Conversa")
 
-        # Histórico de mensagens
-        for msg in st.session_state.display_messages:
-            avatar = "👤" if msg["role"] == "user" else "📋"
-            with st.chat_message(msg["role"], avatar=avatar):
-                st.markdown(msg["content"])
+        # Container com altura fixa e scrollbar — evita que a página cresça indefinidamente
+        chat_container = st.container(height=580)
 
-        # Mensagem de boas-vindas se chat vazio
-        if not st.session_state.display_messages:
-            with st.chat_message("assistant", avatar="📋"):
-                st.markdown(
-                    "Olá! Pronta para montar o memorial. \n\n"
-                    "Descreva os itens em linguagem natural — ambiente por ambiente:\n\n"
-                    "> *cozinha: cuba Tramontina inox 50x40, torneira Docol gourmet preta, "
-                    "cooktop Brastemp indução 5 bocas*"
-                )
+        with chat_container:
+            # Mensagem de boas-vindas se chat vazio
+            if not st.session_state.display_messages:
+                with st.chat_message("assistant", avatar="📋"):
+                    st.markdown(
+                        "Olá! Pronta para montar o memorial.\n\n"
+                        "Descreva os itens em linguagem natural — ambiente por ambiente:\n\n"
+                        "> *cozinha: cuba Tramontina inox 50x40, torneira Docol gourmet preta, "
+                        "cooktop Brastemp indução 5 bocas*"
+                    )
 
-        # Input de chat
+            # Histórico de mensagens
+            for msg in st.session_state.display_messages:
+                avatar = "👤" if msg["role"] == "user" else "📋"
+                with st.chat_message(msg["role"], avatar=avatar):
+                    st.markdown(msg["content"])
+
+        # Input fora do container — fica fixo abaixo da área de scroll
         user_input = st.chat_input(
             placeholder="Descreva os itens do projeto...",
             disabled=(api_key is None),
@@ -420,6 +430,10 @@ def main():
             with st.chat_message("user", avatar="👤"):
                 st.markdown(user_input)
         process_message(user_input, api_key, preview_placeholder)
+        # Re-renderiza o app inteiro para que a sidebar (download button, contadores)
+        # reflita o workbook atualizado. Sem isso, o botão de download captura
+        # os bytes da renderização anterior (planilha vazia).
+        st.rerun()
 
     elif user_input and not api_key:
         st.error(

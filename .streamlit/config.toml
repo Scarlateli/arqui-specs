@@ -1,3 +1,8 @@
+[client]
+# Desabilita atalhos de teclado do Streamlit (ex: C = "Clear caches")
+# que conflitam com Cmd+C normal do usuário
+toolbarMode = "minimal"
+
 [theme]
 # Paleta baseada na estética da apresentação — Estudio GL
 # Tons neutros quentes, tipicamente usados em marcas de arquitetura
