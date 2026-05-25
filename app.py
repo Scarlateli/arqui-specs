@@ -472,7 +472,7 @@ def render_sidebar():
         st.divider()
 
         # ── Nova planilha / limpar conversa ───────────────────────────────────
-        if st.button("Nova planilha", use_container_width=True, help="Começa do zero"):
+        if st.button("Nova planilha", use_container_width=True, help="Começa do zero", type="primary"):
             st.session_state.workbook_bytes = create_template(
                 project_name=st.session_state.project_name
             ).read()
@@ -480,7 +480,7 @@ def render_sidebar():
             st.session_state.api_messages = []
             st.session_state.last_saved = None
             st.rerun()
-        if st.button("Limpar chat", use_container_width=True, help="Mantém planilha"):
+        if st.button("Limpar chat", use_container_width=True, help="Mantém planilha", type="primary"):
             st.session_state.display_messages = []
             st.session_state.api_messages = []
             st.rerun()
