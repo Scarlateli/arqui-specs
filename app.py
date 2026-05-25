@@ -454,7 +454,7 @@ def render_sidebar():
         if st.session_state.get("last_uploaded_id"):
             # Já há uma planilha carregada: mostrar opção de trocar
             st.caption("Planilha carregada")
-            if st.button("Trocar planilha", use_container_width=True, help="Remove a planilha atual e permite carregar outra"):
+            if st.button("Trocar planilha", use_container_width=True, help="Remove a planilha atual e permite carregar outra", type="primary"):
                 st.session_state.last_uploaded_id = None
                 st.rerun()
         else:
