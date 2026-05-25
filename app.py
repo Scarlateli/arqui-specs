@@ -38,7 +38,7 @@ from core.claude_client import (
 
 st.set_page_config(
     page_title="Arqui Specs · Estudio GL",
-    page_icon="📋",
+    page_icon="GL",
     layout="wide",
     initial_sidebar_state="expanded",
 )
@@ -48,40 +48,65 @@ st.set_page_config(
 st.markdown("""
 <style>
 :root {
-  --color-bg-primary: #3D1812;
-  --color-accent: #7A2E2A;
-  --color-sand: #D9CBA8;
-  --color-cream: #F4ECDC;
-  --color-ink: #1F1410;
-  --color-border: rgba(217, 203, 168, 0.2);
+  --color-bordo:   #3D1812;
+  --color-accent:  #7A2E2A;
+  --color-sand:    #C8B48A;
+  --color-cream:   #F7F1E8;
+  --color-bg:      #FAF6EF;
+  --color-ink:     #2A1510;
+  --color-muted:   #6B4F45;
+  --color-border:  rgba(61, 24, 18, 0.12);
+  --color-sidebar-border: rgba(217, 203, 168, 0.18);
 }
 
-html, body, .stApp, [data-testid="stAppViewContainer"] {
-    background-color: var(--color-bg-primary);
-    color: var(--color-cream);
+/* ── Área principal: clara e leve ── */
+html, body,
+.stApp,
+[data-testid="stAppViewContainer"],
+[data-testid="stMainBlockContainer"],
+.main .block-container {
+    background-color: var(--color-bg) !important;
+    color: var(--color-ink);
 }
-/* Sidebar mais estreita e elegante */
+
+/* ── Sidebar: bordo (identidade visual) ── */
 [data-testid="stSidebar"] {
-    min-width: 280px;
-    max-width: 300px;
-    background-color: var(--color-bg-primary);
-    border-right: 1px solid var(--color-border);
+    min-width: 260px;
+    max-width: 280px;
+    background-color: var(--color-bordo) !important;
+    border-right: 1px solid var(--color-sidebar-border);
+}
+[data-testid="stSidebar"] * { color: var(--color-cream); }
+[data-testid="stSidebar"] hr { border-color: var(--color-sidebar-border); }
+
+/* ── Inputs da sidebar ── */
+[data-testid="stSidebar"] input,
+[data-testid="stSidebar"] textarea,
+[data-testid="stSidebar"] [data-baseweb="input"] > div {
+    background-color: rgba(250, 246, 239, 0.12) !important;
+    color: var(--color-cream) !important;
+    border: 1px solid var(--color-sidebar-border) !important;
+}
+[data-testid="stSidebar"] input::placeholder { color: rgba(247,241,232,0.45) !important; }
+
+/* ── Botões sidebar ── */
+[data-testid="stSidebar"] .stButton > button,
+[data-testid="stSidebar"] [data-testid="stDownloadButton"] button {
+    background-color: rgba(250,246,239,0.12) !important;
+    color: var(--color-cream) !important;
+    border: 1px solid var(--color-sidebar-border) !important;
+}
+[data-testid="stSidebar"] .stButton > button:hover,
+[data-testid="stSidebar"] [data-testid="stDownloadButton"] button:hover {
+    background-color: rgba(250,246,239,0.22) !important;
 }
 
-[data-testid="stSidebar"] * {
-    color: var(--color-cream);
-}
-
-[data-testid="stSidebar"] hr,
-hr {
-    border-color: var(--color-border);
-}
-
+/* ── Branding header ── */
 .brand-header {
     display: flex;
     align-items: center;
     gap: 12px;
-    margin-bottom: 18px;
+    margin-bottom: 16px;
 }
 .brand-logo {
     height: 40px;
@@ -92,115 +117,111 @@ hr {
 }
 .brand-name {
     font-family: Georgia, "Times New Roman", serif;
-    font-size: 15px;
+    font-size: 14px;
     font-weight: 400;
-    letter-spacing: 0.05em;
+    letter-spacing: 0.06em;
     text-transform: uppercase;
     color: var(--color-cream);
     line-height: 1.2;
 }
 .brand-product {
-    font-size: 20px;
+    font-size: 19px;
     font-weight: 700;
     color: var(--color-sand);
-    letter-spacing: 0.04em;
-    margin-bottom: 2px;
+    letter-spacing: 0.03em;
+    margin-bottom: 1px;
 }
 .brand-sub {
-    font-size: 11px;
-    color: var(--color-sand);
-    letter-spacing: 0.12em;
+    font-size: 10px;
+    color: rgba(200,180,138,0.75);
+    letter-spacing: 0.14em;
     text-transform: uppercase;
-    margin-bottom: 16px;
+    margin-bottom: 14px;
 }
-/* Inputs e cards claros */
+
+/* ── Inputs área principal ── */
 input, textarea,
 [data-baseweb="input"] > div,
 [data-baseweb="textarea"] > div,
 [data-testid="stTextInput"] input,
 [data-testid="stChatInput"] textarea {
-    background-color: var(--color-cream) !important;
+    background-color: #fff !important;
     color: var(--color-ink) !important;
+    border: 1px solid var(--color-border) !important;
+}
+input::placeholder, textarea::placeholder {
+    color: rgba(42,21,16,0.38) !important;
 }
 
-input::placeholder,
-textarea::placeholder {
-    color: rgba(31, 20, 16, 0.55) !important;
-}
-
-/* Botões */
+/* ── Botões área principal ── */
 .stButton > button,
 [data-testid="stDownloadButton"] button,
-button[kind="primary"],
-button[kind="secondary"] {
+button[kind="primary"] {
     background-color: var(--color-accent) !important;
     color: var(--color-cream) !important;
-    border: 1px solid rgba(217, 203, 168, 0.35) !important;
+    border: none !important;
 }
-
 .stButton > button:hover,
 [data-testid="stDownloadButton"] button:hover {
-    background-color: #8F3B36 !important;
-    border-color: var(--color-sand) !important;
+    background-color: var(--color-bordo) !important;
 }
 
-/* Balão de chat do assistente com borda esquerda bronze */
-[data-testid="stChatMessage"]:has([data-testid="stChatMessageContent"]) {
+/* ── Chat: balão assistente ── */
+[data-testid="stChatMessage"]:has([data-testid="stChatMessageContent"]),
+[data-testid="stChatMessage"]:has([data-testid="chatAvatarIcon-assistant"]) {
+    background-color: #fff;
+    border: 1px solid var(--color-border);
     border-left: 3px solid var(--color-sand);
-    padding-left: 8px;
-    background-color: rgba(244, 236, 220, 0.92);
-    color: var(--color-ink);
     border-radius: 10px;
-    margin-bottom: 10px;
+    margin-bottom: 8px;
+    color: var(--color-ink);
 }
-[data-testid="stChatMessage"]:has([data-testid="stChatMessageContent"]) * {
+[data-testid="stChatMessage"]:has([data-testid="stChatMessageContent"]) *,
+[data-testid="stChatMessage"]:has([data-testid="chatAvatarIcon-assistant"]) * {
     color: var(--color-ink);
 }
 
-/* Balão do usuário — best effort: Streamlit pode mudar test IDs entre versões */
+/* ── Chat: balão usuário ── */
 [data-testid="stChatMessage"]:has([data-testid="stChatMessageAvatarUser"]),
 [data-testid="stChatMessage"]:has([data-testid="chatAvatarIcon-user"]),
 [data-testid="stChatMessage"]:has([aria-label*="user"]) {
-    background-color: var(--color-bg-primary) !important;
+    background-color: var(--color-cream) !important;
     border: 1px solid var(--color-border);
-    border-left: 3px solid var(--color-sand);
-    color: var(--color-cream) !important;
+    border-left: 3px solid rgba(61,24,18,0.3);
+    border-radius: 10px;
+    margin-bottom: 8px;
 }
 [data-testid="stChatMessage"]:has([data-testid="stChatMessageAvatarUser"]) *,
 [data-testid="stChatMessage"]:has([data-testid="chatAvatarIcon-user"]) *,
 [data-testid="stChatMessage"]:has([aria-label*="user"]) * {
-    color: var(--color-cream) !important;
+    color: var(--color-ink) !important;
 }
 
-
-/* Preview: container com scroll */
-.preview-container { max-height: 75vh; overflow-y: auto; }
-
-/* Títulos */
-h1, h2, h3, h4 {
-    color: var(--color-sand) !important;
+/* ── Container chat ── */
+[data-testid="stVerticalBlockBorderWrapper"] {
+    background-color: var(--color-bg) !important;
 }
 
-/* Dataframes e blocos claros */
+/* ── Títulos ── */
+h1, h2, h3, h4 { color: var(--color-bordo) !important; }
+
+/* ── Dataframe / alertas ── */
 [data-testid="stDataFrame"],
-[data-testid="stTable"],
-[data-testid="stAlert"] {
-    background-color: var(--color-cream);
-    color: var(--color-ink);
+[data-testid="stTable"] {
     border-radius: 8px;
+    overflow: hidden;
+}
+[data-testid="stAlert"] {
+    border-left: 3px solid var(--color-accent) !important;
 }
 
-[data-testid="stCaptionContainer"],
-[data-testid="stMarkdownContainer"] p {
-    color: inherit;
-}
+hr { border-color: var(--color-border); }
 
 @media (max-width: 768px) {
     .brand-logo { height: 28px; width: 28px; }
-    .brand-name { font-size: 14px; }
+    .brand-name { font-size: 12px; }
 }
 
-/* Rodapé */
 footer { visibility: hidden; }
 </style>
 """, unsafe_allow_html=True)
@@ -232,7 +253,7 @@ def check_auth() -> bool:
         return True
 
     with st.container():
-        st.markdown("## 🔐 Arqui Specs")
+        st.markdown("## Arqui Specs")
         st.markdown("Ferramenta interna · Estudio GL")
         password = st.text_input("Senha de acesso", type="password", key="pw_input")
         if st.button("Entrar", type="primary"):
@@ -354,7 +375,7 @@ def render_sidebar():
         filename = f"Memorial_{info['nome'].replace(' ', '_').replace('/', '-')}.xlsx"
 
         st.download_button(
-            label="⬇️ Baixar .xlsx",
+            label="Baixar .xlsx",
             data=st.session_state.workbook_bytes,
             file_name=filename,
             mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
@@ -371,7 +392,7 @@ def render_sidebar():
         # ── Nova planilha / limpar conversa ───────────────────────────────
         col_a, col_b = st.columns(2)
         with col_a:
-            if st.button("🗒️ Nova planilha", use_container_width=True, help="Começa do zero"):
+            if st.button("Nova planilha", use_container_width=True, help="Começa do zero"):
                 st.session_state.workbook_bytes = create_template(
                     project_name=st.session_state.project_name
                 ).read()
@@ -380,7 +401,7 @@ def render_sidebar():
                 st.session_state.last_saved = None
                 st.rerun()
         with col_b:
-            if st.button("🧹 Limpar chat", use_container_width=True, help="Mantém planilha"):
+            if st.button("Limpar chat", use_container_width=True, help="Mantém planilha"):
                 st.session_state.display_messages = []
                 st.session_state.api_messages = []
                 st.rerun()
@@ -434,7 +455,7 @@ def process_message(user_input: str, api_key: str, preview_placeholder):
     st.session_state.api_messages.append(api_user_msg)
 
     # Streaming da resposta
-    with st.chat_message("assistant", avatar="📋"):
+    with st.chat_message("assistant"):
         placeholder = st.empty()
         full_response = ""
         workbook_updated = False
@@ -534,7 +555,7 @@ def main():
 
     # 5. Coluna de chat (esquerda)
     with col_chat:
-        st.markdown("### 💬 Conversa")
+        st.markdown("### Conversa")
 
         # Container com altura fixa e scrollbar — evita que a página cresça indefinidamente
         chat_container = st.container(height=580)
@@ -542,7 +563,7 @@ def main():
         with chat_container:
             # Mensagem de boas-vindas se chat vazio
             if not st.session_state.display_messages:
-                with st.chat_message("assistant", avatar="📋"):
+                with st.chat_message("assistant"):
                     st.markdown(
                         "Olá! Pronta para montar o memorial.\n\n"
                         "Descreva os itens em linguagem natural — ambiente por ambiente:\n\n"
@@ -552,8 +573,7 @@ def main():
 
             # Histórico de mensagens
             for msg in st.session_state.display_messages:
-                avatar = "👤" if msg["role"] == "user" else "📋"
-                with st.chat_message(msg["role"], avatar=avatar):
+                with st.chat_message(msg["role"]):
                     st.markdown(msg["content"])
 
         # Input fora do container — fica fixo abaixo da área de scroll
@@ -564,7 +584,7 @@ def main():
 
     # 6. Coluna de preview (direita) — sempre renderiza com estado atual
     with col_preview:
-        st.markdown("### 📊 Planilha ao vivo")
+        st.markdown("### Planilha ao vivo")
         preview_placeholder = st.container()
         wb_current = get_workbook()
         render_preview(preview_placeholder, wb_current)
@@ -572,7 +592,7 @@ def main():
     # 7. Processar input (após ambas as colunas serem definidas)
     if user_input and api_key:
         with col_chat:
-            with st.chat_message("user", avatar="👤"):
+            with st.chat_message("user"):
                 st.markdown(user_input)
         process_message(user_input, api_key, preview_placeholder)
         # Re-renderiza o app inteiro para que a sidebar (download button, contadores)
