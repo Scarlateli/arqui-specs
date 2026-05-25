@@ -273,14 +273,30 @@ button[kind="primary"] {
 /* ── Títulos ── */
 h1, h2, h3, h4 { color: var(--color-bordo) !important; }
 
-/* ── Dataframe / alertas ── */
-[data-testid="stDataFrame"],
-[data-testid="stTable"] {
+/* ── Dataframe ── */
+[data-testid="stDataFrame"] {
     border-radius: 8px;
-    overflow: hidden;
+}
+/* Garantir contraste de texto nas células do dataframe */
+[data-testid="stDataFrame"] [data-testid="glideDataEditor"] * {
+    color: var(--color-ink) !important;
+}
+/* Header do dataframe: bordo com texto cream */
+[data-testid="stDataFrame"] .dvn-canvas {
+    background-color: var(--color-bg);
 }
 [data-testid="stAlert"] {
     border-left: 3px solid var(--color-accent) !important;
+}
+
+/* ── Chat container: scroll vertical fixo ── */
+[data-testid="stVerticalBlockBorderWrapper"] > div {
+    overflow-y: auto !important;
+    overflow-x: hidden !important;
+}
+/* Garantir que o container de chat não cresce além do viewport */
+[data-testid="stVerticalBlockBorderWrapper"] {
+    max-height: inherit;
 }
 
 hr { border-color: var(--color-border); }
@@ -503,16 +519,7 @@ def render_sidebar():
         data = get_sheet_data(wb)
         n_items = len(data)
         n_ambientes = len({r["ambiente"] for r in data if r["ambiente"]})
-        n_definir = sum(
-            1
-            for row in data
-            for field in ["modelo", "segmento", "acabamento", "marca", "dimensoes", "quantidade"]
-            if str(row.get(field, "")).strip().lower() == "(definir)"
-        )
-
         st.markdown(f"**{n_items} itens · {n_ambientes} ambientes/abas**")
-        if n_definir > 0:
-            st.warning(f"⚠️ {n_definir} campo(s) com `(definir)`")
 
         # Indicador da chave da API
         api_key = get_api_key()
@@ -607,18 +614,13 @@ def render_preview(container, wb: openpyxl.Workbook):
         if info["cliente"] and info["cliente"] != "(definir)":
             st.caption(f"Cliente: {info['cliente']} · {info['emissao']} · {info['versao']}")
 
-        # Tabela com estilo
-        try:
-            styled = style_preview_dataframe(df)
-            st.dataframe(
-                styled,
-                use_container_width=True,
-                height=min(600, 60 + len(df) * 38),
-                hide_index=True,
-            )
-        except Exception:
-            # Fallback sem estilo se a versão do pandas/streamlit não suportar
-            st.dataframe(df, use_container_width=True, hide_index=True)
+        # Tabela — usa tema nativo do Streamlit (config.toml define as cores)
+        st.dataframe(
+            df,
+            use_container_width=True,
+            height=min(600, 60 + len(df) * 38),
+            hide_index=True,
+        )
 
         # Rodapé de contagem
         n = len(df)
