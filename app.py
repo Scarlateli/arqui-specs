@@ -554,6 +554,7 @@ def process_message(user_input: str, api_key: str, preview_placeholder):
     # Streaming da resposta
     with st.chat_message("assistant"):
         placeholder = st.empty()
+        placeholder.markdown("_Analisando..._")
         full_response = ""
         workbook_updated = False
         error_msg = None

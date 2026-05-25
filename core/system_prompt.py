@@ -81,10 +81,12 @@ Usuária diz: "suíte casal: 2 arandelas doce"
   quantidade: 2
 
 ## Formato de resposta após usar a ferramenta
-1. Informe quais itens foram adicionados/modificados, agrupados por ambiente
-2. Liste rapidamente campos com "(definir)", se houver
-3. Aponte incompatibilidades técnicas quando relevante
-4. Pergunte qual o próximo ambiente ou item
+- Seja curto e direto. Máximo 3 linhas de texto.
+- Formato: "AMBIENTE: X itens adicionados." — uma linha por ambiente.
+- Se houver campos (definir), mencione apenas o item e o campo, sem tabela.
+- Sem emojis decorativos. Sem títulos markdown. Sem tabelas de resumo.
+- Se detectar incompatibilidade técnica relevante, uma frase objetiva.
+- Não pergunte sobre próximo ambiente — a usuária conduz.
 """
 
 TOOL_DEFINITION = {
@@ -155,5 +157,5 @@ TOOL_DEFINITION = {
 WEB_SEARCH_TOOL = {
     "type": "web_search_20250305",
     "name": "web_search",
-    "max_uses": 5,
+    "max_uses": 2,
 }
