@@ -14,7 +14,9 @@ Estrutura:
 import streamlit as st
 import openpyxl
 import datetime
+import base64
 from io import BytesIO
+from pathlib import Path
 
 from core.spreadsheet import (
     create_template,
@@ -45,43 +47,171 @@ st.set_page_config(
 
 st.markdown("""
 <style>
-/* Sidebar mais estreita e elegante */
-[data-testid="stSidebar"] { min-width: 280px; max-width: 300px; }
+:root {
+  --color-bg-primary: #3D1812;
+  --color-accent: #7A2E2A;
+  --color-sand: #D9CBA8;
+  --color-cream: #F4ECDC;
+  --color-ink: #1F1410;
+  --color-border: rgba(217, 203, 168, 0.2);
+}
 
-/* Título da marca */
-.brand-title {
-    font-size: 22px;
-    font-weight: 700;
-    color: #1C1C1C;
+html, body, .stApp, [data-testid="stAppViewContainer"] {
+    background-color: var(--color-bg-primary);
+    color: var(--color-cream);
+}
+/* Sidebar mais estreita e elegante */
+[data-testid="stSidebar"] {
+    min-width: 280px;
+    max-width: 300px;
+    background-color: var(--color-bg-primary);
+    border-right: 1px solid var(--color-border);
+}
+
+[data-testid="stSidebar"] * {
+    color: var(--color-cream);
+}
+
+[data-testid="stSidebar"] hr,
+hr {
+    border-color: var(--color-border);
+}
+
+.brand-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 18px;
+}
+.brand-logo {
+    height: 40px;
+    width: 40px;
+    display: block;
+    border-radius: 6px;
+    object-fit: cover;
+}
+.brand-name {
+    font-family: Georgia, "Times New Roman", serif;
+    font-size: 15px;
+    font-weight: 400;
     letter-spacing: 0.05em;
+    text-transform: uppercase;
+    color: var(--color-cream);
+    line-height: 1.2;
+}
+.brand-product {
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--color-sand);
+    letter-spacing: 0.04em;
     margin-bottom: 2px;
 }
 .brand-sub {
     font-size: 11px;
-    color: #8B6F47;
+    color: var(--color-sand);
     letter-spacing: 0.12em;
     text-transform: uppercase;
     margin-bottom: 16px;
 }
+/* Inputs e cards claros */
+input, textarea,
+[data-baseweb="input"] > div,
+[data-baseweb="textarea"] > div,
+[data-testid="stTextInput"] input,
+[data-testid="stChatInput"] textarea {
+    background-color: var(--color-cream) !important;
+    color: var(--color-ink) !important;
+}
+
+input::placeholder,
+textarea::placeholder {
+    color: rgba(31, 20, 16, 0.55) !important;
+}
+
+/* Botões */
+.stButton > button,
+[data-testid="stDownloadButton"] button,
+button[kind="primary"],
+button[kind="secondary"] {
+    background-color: var(--color-accent) !important;
+    color: var(--color-cream) !important;
+    border: 1px solid rgba(217, 203, 168, 0.35) !important;
+}
+
+.stButton > button:hover,
+[data-testid="stDownloadButton"] button:hover {
+    background-color: #8F3B36 !important;
+    border-color: var(--color-sand) !important;
+}
 
 /* Balão de chat do assistente com borda esquerda bronze */
 [data-testid="stChatMessage"]:has([data-testid="stChatMessageContent"]) {
-    border-left: 3px solid #8B6F47;
+    border-left: 3px solid var(--color-sand);
     padding-left: 8px;
+    background-color: rgba(244, 236, 220, 0.92);
+    color: var(--color-ink);
+    border-radius: 10px;
+    margin-bottom: 10px;
+}
+[data-testid="stChatMessage"]:has([data-testid="stChatMessageContent"]) * {
+    color: var(--color-ink);
 }
 
-/* Badge de status na preview */
-.status-aprovado { background:#4A7A5A; color:#fff; padding:2px 8px; border-radius:4px; font-size:11px; font-weight:600; }
-.status-decidir  { background:#C4904A; color:#fff; padding:2px 8px; border-radius:4px; font-size:11px; font-weight:600; }
-.status-verificar{ background:#7A6B4A; color:#fff; padding:2px 8px; border-radius:4px; font-size:11px; font-weight:600; }
+/* Balão do usuário — best effort: Streamlit pode mudar test IDs entre versões */
+[data-testid="stChatMessage"]:has([data-testid="stChatMessageAvatarUser"]),
+[data-testid="stChatMessage"]:has([data-testid="chatAvatarIcon-user"]),
+[data-testid="stChatMessage"]:has([aria-label*="user"]) {
+    background-color: var(--color-bg-primary) !important;
+    border: 1px solid var(--color-border);
+    border-left: 3px solid var(--color-sand);
+    color: var(--color-cream) !important;
+}
+[data-testid="stChatMessage"]:has([data-testid="stChatMessageAvatarUser"]) *,
+[data-testid="stChatMessage"]:has([data-testid="chatAvatarIcon-user"]) *,
+[data-testid="stChatMessage"]:has([aria-label*="user"]) * {
+    color: var(--color-cream) !important;
+}
+
 
 /* Preview: container com scroll */
 .preview-container { max-height: 75vh; overflow-y: auto; }
+
+/* Títulos */
+h1, h2, h3, h4 {
+    color: var(--color-sand) !important;
+}
+
+/* Dataframes e blocos claros */
+[data-testid="stDataFrame"],
+[data-testid="stTable"],
+[data-testid="stAlert"] {
+    background-color: var(--color-cream);
+    color: var(--color-ink);
+    border-radius: 8px;
+}
+
+[data-testid="stCaptionContainer"],
+[data-testid="stMarkdownContainer"] p {
+    color: inherit;
+}
+
+@media (max-width: 768px) {
+    .brand-logo { height: 28px; width: 28px; }
+    .brand-name { font-size: 14px; }
+}
 
 /* Rodapé */
 footer { visibility: hidden; }
 </style>
 """, unsafe_allow_html=True)
+
+
+def _logo_data_uri() -> str:
+    logo_path = Path(__file__).parent / "assets" / "logo-gl-monogram.png"
+    if not logo_path.exists():
+        return ""
+    encoded = base64.b64encode(logo_path.read_bytes()).decode("utf-8")
+    return f"data:image/png;base64,{encoded}"
 
 
 # ─── Auth (SCRUM-58) ─────────────────────────────────────────────────────────
@@ -162,8 +292,19 @@ def save_workbook(wb: openpyxl.Workbook):
 def render_sidebar():
     with st.sidebar:
         # Logo / marca
-        st.markdown('<div class="brand-title">Arqui Specs</div>', unsafe_allow_html=True)
-        st.markdown('<div class="brand-sub">Estudio GL · Ferramenta Interna</div>', unsafe_allow_html=True)
+        logo_uri = _logo_data_uri()
+        logo_img = f'<img src="{logo_uri}" alt="Gabriela Lendecker" class="brand-logo" />' if logo_uri else ""
+        st.markdown(
+            f"""
+            <div class="brand-header">
+              {logo_img}
+              <span class="brand-name">Gabriela Lendecker</span>
+            </div>
+            <div class="brand-product">Arqui Specs</div>
+            <div class="brand-sub">Ferramenta Interna</div>
+            """,
+            unsafe_allow_html=True,
+        )
         st.divider()
 
         # Nome do projeto
@@ -251,13 +392,18 @@ def render_sidebar():
         data = get_sheet_data(wb)
         n_items = len(data)
         n_ambientes = len({r["ambiente"] for r in data if r["ambiente"]})
-        n_decidir = sum(1 for r in data if r["status"] == "DECIDIR")
+        n_definir = sum(
+            1
+            for row in data
+            for field in ["modelo", "segmento", "acabamento", "marca", "dimensoes", "quantidade"]
+            if str(row.get(field, "")).strip().lower() == "(definir)"
+        )
 
-        st.markdown(f"**{n_items} itens · {n_ambientes} ambientes**")
-        if n_decidir > 0:
-            st.warning(f"⚠️ {n_decidir} item(s) para decidir")
+        st.markdown(f"**{n_items} itens · {n_ambientes} ambientes/abas**")
+        if n_definir > 0:
+            st.warning(f"⚠️ {n_definir} campo(s) com `(definir)`")
 
-        # API key status
+        # Indicador da chave da API
         api_key = get_api_key()
         if not api_key:
             st.error("API key não configurada.\nCrie `.streamlit/secrets.toml`.")
@@ -365,9 +511,8 @@ def render_preview(container, wb: openpyxl.Workbook):
 
         # Rodapé de contagem
         n = len(df)
-        n_ap = (df["STATUS"] == "APROVADO").sum()
-        n_dec = (df["STATUS"] == "DECIDIR").sum()
-        st.caption(f"{n} itens · ✓ {n_ap} aprovados · ? {n_dec} a decidir")
+        n_amb = df["AMBIENTE"].nunique() if "AMBIENTE" in df.columns else 0
+        st.caption(f"{n} itens · {n_amb} ambientes/abas")
 
 
 # ─── App principal ───────────────────────────────────────────────────────────
@@ -402,7 +547,7 @@ def main():
                         "Olá! Pronta para montar o memorial.\n\n"
                         "Descreva os itens em linguagem natural — ambiente por ambiente:\n\n"
                         "> *cozinha: cuba Tramontina inox 50x40, torneira Docol gourmet preta, "
-                        "cooktop Brastemp indução 5 bocas*"
+                        "cooktop Electrolux IE80P, 2 arandelas para suíte casal*"
                     )
 
             # Histórico de mensagens
