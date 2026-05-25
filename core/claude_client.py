@@ -30,9 +30,9 @@ from .spreadsheet import apply_operations, get_compact_context, save_workbook_to
 
 # ─── Constantes ──────────────────────────────────────────────────────────────
 
-# claude-sonnet-4-6: custo/qualidade balanceado para o MVP.
-# Decidido em ADR-003 (atualizado de sonnet-4-5 → sonnet-4-6 pela disponibilidade na API).
-MODEL = "claude-sonnet-4-6"
+# claude-haiku-4-5: otimizado para custo no MVP.
+# ADR-003: sonnet-4-5 → sonnet-4-6 → haiku-4-5 (redução de custo ~3x, contexto 200K).
+MODEL = "claude-haiku-4-5"
 
 MAX_TOKENS_MAIN = 4096    # Para respostas de chat (suficiente para qualquer resposta + tool use)
 MAX_TOKENS_FOLLOWUP = 2048  # Para confirmação pós-tool use
@@ -231,7 +231,7 @@ def build_api_messages_from_history(
     Reconstrói a lista de mensagens para a API a partir do histórico de display.
 
     Nota: Para conversas longas, poderíamos truncar o histórico aqui.
-    Para o MVP, mantemos tudo — a janela de contexto do Sonnet 4.6 é 200k tokens,
+    Para o MVP, mantemos tudo — a janela de contexto do Haiku 4.5 é 200K tokens,
     mais do que suficiente para qualquer projeto de memorial descritivo.
     """
     messages = []
