@@ -395,19 +395,20 @@ def get_preview_dataframe(wb: openpyxl.Workbook) -> pd.DataFrame:
 
 
 def style_preview_dataframe(df: pd.DataFrame) -> pd.io.formats.style.Styler:
+    """Aplica estilo mínimo ao dataframe de preview.
+    Mantém texto legível e header com identidade visual;
+    deixa o fundo das linhas para o tema nativo do Streamlit.
+    """
     styler = df.style.set_properties(**{
         "font-size": "12px",
-        "color": "#1F1410",
-        "border-color": "#D9CBA8",
+        "color": "#2A1510",
     })
     styler = styler.set_table_styles([
         {"selector": "th", "props": [
             ("background-color", "#7A2E2A"),
             ("color", "#F4ECDC"),
-            ("font-weight", "bold"),
+            ("font-weight", "600"),
             ("font-size", "12px"),
         ]},
-        {"selector": "tr:nth-child(even)", "props": [("background-color", "#E8DDBF"), ("color", "#1F1410")]},
-        {"selector": "tr:nth-child(odd)", "props": [("background-color", "#F4ECDC"), ("color", "#1F1410")]},
     ])
     return styler
