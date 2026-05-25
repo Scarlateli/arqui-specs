@@ -687,7 +687,8 @@ def main():
         with col_chat:
             with st.chat_message("user"):
                 st.markdown(user_input)
-        process_message(user_input, api_key, preview_placeholder)
+        with st.spinner("Analisando..."):
+            process_message(user_input, api_key, preview_placeholder)
         # Re-renderiza o app inteiro para que a sidebar (download button, contadores)
         # reflita o workbook atualizado. Sem isso, o botão de download captura
         # os bytes da renderização anterior (planilha vazia).
