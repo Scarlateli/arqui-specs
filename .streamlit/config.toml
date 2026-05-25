@@ -4,11 +4,9 @@
 toolbarMode = "minimal"
 
 [theme]
-# Paleta baseada na estética da apresentação — Estudio GL
-# Tons neutros quentes, tipicamente usados em marcas de arquitetura
-# Confirme com a Gabriela se quer ajustar as cores
-primaryColor = "#8B6F47"           # Bronze quente — destaques, botões
-backgroundColor = "#FAFAF7"        # Branco quente — fundo principal
-secondaryBackgroundColor = "#F0EDE6"  # Bege — sidebar, containers
-textColor = "#1C1C1C"              # Quase preto — texto principal
+# Identidade Gabriela Lendecker — tema claro
+primaryColor = "#7A2E2A"              # Bordo/terracota — botões, links, destaques
+backgroundColor = "#FAF6EF"           # Cream claro — fundo principal
+secondaryBackgroundColor = "#F0E8D8"  # Cream médio — sidebar, cards, inputs
+textColor = "#2A1510"                 # Ink — texto principal
 font = "sans serif"
