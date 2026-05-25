@@ -378,7 +378,7 @@ def init_session():
         st.session_state.api_messages = []  # Histórico completo para a API
 
     if "project_name" not in st.session_state:
-        st.session_state.project_name = "Memorial Descritivo"
+        st.session_state.project_name = ""
 
     if "last_saved" not in st.session_state:
         st.session_state.last_saved = None
