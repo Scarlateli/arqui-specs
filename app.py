@@ -90,15 +90,24 @@ html, body,
 [data-testid="stSidebar"] input::placeholder { color: rgba(247,241,232,0.45) !important; }
 
 /* ── Botões sidebar ── */
-[data-testid="stSidebar"] .stButton > button,
-[data-testid="stSidebar"] [data-testid="stDownloadButton"] button {
-    background-color: rgba(250,246,239,0.12) !important;
+[data-testid="stSidebar"] .stButton > button {
+    background-color: rgba(247,241,232,0.14) !important;
     color: var(--color-cream) !important;
-    border: 1px solid var(--color-sidebar-border) !important;
+    border: 1px solid rgba(247,241,232,0.30) !important;
+    font-weight: 500 !important;
 }
-[data-testid="stSidebar"] .stButton > button:hover,
+[data-testid="stSidebar"] .stButton > button:hover {
+    background-color: rgba(247,241,232,0.25) !important;
+    border-color: rgba(247,241,232,0.55) !important;
+}
+[data-testid="stSidebar"] [data-testid="stDownloadButton"] button {
+    background-color: var(--color-accent) !important;
+    color: var(--color-cream) !important;
+    border: none !important;
+    font-weight: 600 !important;
+}
 [data-testid="stSidebar"] [data-testid="stDownloadButton"] button:hover {
-    background-color: rgba(250,246,239,0.22) !important;
+    background-color: #8F3B36 !important;
 }
 
 /* ── Branding header ── */
@@ -137,6 +146,17 @@ html, body,
     letter-spacing: 0.14em;
     text-transform: uppercase;
     margin-bottom: 14px;
+}
+
+/* ── Labels e texto da área principal ── */
+label,
+[data-testid="stWidgetLabel"] p,
+[data-testid="stWidgetLabel"] span,
+.stTextInput label,
+.stFileUploader label,
+.stSelectbox label {
+    color: var(--color-ink) !important;
+    opacity: 1 !important;
 }
 
 /* ── Inputs área principal ── */
