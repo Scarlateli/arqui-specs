@@ -438,7 +438,7 @@ def render_sidebar():
         project_name = st.text_input(
             "Nome do projeto",
             value=st.session_state.project_name,
-            placeholder="Ex: Apto Alencar — Higienópolis",
+            placeholder="",
             key="project_name_input",
         )
         if project_name != st.session_state.project_name:
