@@ -292,16 +292,24 @@ hr { border-color: var(--color-border); }
 
 footer { visibility: hidden; }
 
-/* ── Sidebar colapsado: esconder barra bordo ── */
+/* ── Header e sidebar colapsado ── */
+[data-testid="stHeader"],
+[data-testid="stToolbar"],
+[data-testid="stDecoration"] {
+    background-color: transparent !important;
+    border: none !important;
+    box-shadow: none !important;
+}
 [data-testid="collapsedControl"],
-[data-testid="stSidebarCollapsedControl"],
-section[data-testid="stSidebar"][aria-expanded="false"] + div {
+[data-testid="stSidebarCollapsedControl"] {
     background-color: transparent !important;
     border: none !important;
     box-shadow: none !important;
 }
 [data-testid="collapsedControl"] button,
-[data-testid="stSidebarCollapsedControl"] button {
+[data-testid="stSidebarCollapsedControl"] button,
+[data-testid="collapsedControl"] svg,
+[data-testid="stSidebarCollapsedControl"] svg {
     color: var(--color-bordo) !important;
     background-color: transparent !important;
 }
@@ -509,7 +517,7 @@ def render_sidebar():
             st.error("API key não configurada.\nCrie `.streamlit/secrets.toml`.")
 
         st.divider()
-        st.caption(f"Modelo: `{MODEL}`")
+        st.caption(f"Modelo: {MODEL}")
         st.caption("v1.0 · Arqui Specs")
 
 
