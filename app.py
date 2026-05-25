@@ -433,19 +433,22 @@ def render_sidebar():
 
         st.divider()
 
-        # ── Upload de planilha existente ──────────────────────────────────
+        # ── Upload de planilha existente ────────────────────────────────
         st.markdown("**Planilha**")
-        uploaded = st.file_uploader(
-            "Carregar .xlsx existente",
-            type=["xlsx"],
-            label_visibility="collapsed",
-            key="uploader",
-        )
-        if uploaded:
-            # Só processa se for um arquivo NOVO (file_id diferente do último).
-            # Sem isso, cada st.rerun() re-lê o uploader e sobrescreve
-            # as modificações feitas pelo chat.
-            if uploaded.file_id != st.session_state.get("last_uploaded_id"):
+        if st.session_state.get("last_uploaded_id"):
+            # Já há uma planilha carregada: mostrar opção de trocar
+            st.caption("Planilha carregada")
+            if st.button("Trocar planilha", use_container_width=True, help="Remove a planilha atual e permite carregar outra"):
+                st.session_state.last_uploaded_id = None
+                st.rerun()
+        else:
+            uploaded = st.file_uploader(
+                "Carregar .xlsx existente",
+                type=["xlsx"],
+                label_visibility="collapsed",
+                key="uploader",
+            )
+            if uploaded:
                 try:
                     wb_test = load_workbook_from_bytes(uploaded.getvalue())
                     st.session_state.workbook_bytes = uploaded.getvalue()
